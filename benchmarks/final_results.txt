@@ -1,0 +1,26 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/kalbasit/fastcdc-go/benchmarks
+cpu: Apple M4
+BenchmarkComparison_Kalbasit-10           	    2238	   5477710 ns/op	1914.26 MB/s	 1649121 B/op	       8 allocs/op
+BenchmarkComparison_Kalbasit-10           	    2198	   5399793 ns/op	1941.88 MB/s	 1731041 B/op	       8 allocs/op
+BenchmarkComparison_Kalbasit-10           	    2228	   5300197 ns/op	1978.37 MB/s	 1829347 B/op	       8 allocs/op
+BenchmarkComparison_Kalbasit-10           	    2185	   5495448 ns/op	1908.08 MB/s	 2075105 B/op	       9 allocs/op
+BenchmarkComparison_Kalbasit-10           	    2222	   5348488 ns/op	1960.51 MB/s	 2255330 B/op	       9 allocs/op
+BenchmarkComparison_Kalbasit_NoNorm-10    	    2191	   5508225 ns/op	1903.65 MB/s	 1829345 B/op	       8 allocs/op
+BenchmarkComparison_Kalbasit_NoNorm-10    	    2221	   5530787 ns/op	1895.89 MB/s	 1731042 B/op	       8 allocs/op
+BenchmarkComparison_Kalbasit_NoNorm-10    	    2199	   5427306 ns/op	1932.04 MB/s	 1731042 B/op	       8 allocs/op
+BenchmarkComparison_Kalbasit_NoNorm-10    	    2166	   5375001 ns/op	1950.84 MB/s	 1731042 B/op	       8 allocs/op
+BenchmarkComparison_Kalbasit_NoNorm-10    	    2170	   5505192 ns/op	1904.70 MB/s	 1313249 B/op	       7 allocs/op
+BenchmarkComparison_Jotfs-10              	    2671	   4472595 ns/op	2344.45 MB/s	  524448 B/op	       3 allocs/op
+BenchmarkComparison_Jotfs-10              	    2656	   4548812 ns/op	2305.16 MB/s	  524448 B/op	       3 allocs/op
+BenchmarkComparison_Jotfs-10              	    2691	   4505045 ns/op	2327.56 MB/s	  524449 B/op	       3 allocs/op
+BenchmarkComparison_Jotfs-10              	    2646	   4505913 ns/op	2327.11 MB/s	  524448 B/op	       3 allocs/op
+BenchmarkComparison_Jotfs-10              	    2601	   4548284 ns/op	2305.43 MB/s	  524448 B/op	       3 allocs/op
+BenchmarkComparison_Restic-10             	     795	  14839415 ns/op	 706.62 MB/s	31052614 B/op	      27 allocs/op
+BenchmarkComparison_Restic-10             	     717	  16655870 ns/op	 629.55 MB/s	42423108 B/op	      30 allocs/op
+BenchmarkComparison_Restic-10             	     861	  15064177 ns/op	 696.07 MB/s	33035084 B/op	      29 allocs/op
+BenchmarkComparison_Restic-10             	    1003	  15430190 ns/op	 679.56 MB/s	35271496 B/op	      28 allocs/op
+BenchmarkComparison_Restic-10             	     882	  13968463 ns/op	 750.67 MB/s	28627774 B/op	      30 allocs/op
+PASS
+ok  	github.com/kalbasit/fastcdc-go/benchmarks	268.894s

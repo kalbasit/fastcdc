@@ -1,0 +1,27 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/kalbasit/fastcdc-go/benchmarks
+cpu: Apple M4
+BenchmarkChunkerNext/1MiB-10              	   13203	    451529 ns/op	2322.28 MB/s	 1051076 B/op	       6 allocs/op
+BenchmarkChunkerNext/10MiB-10             	    1310	   4561267 ns/op	2298.87 MB/s	 1051073 B/op	       6 allocs/op
+BenchmarkChunkerNext/100MiB-10            	     135	  44560905 ns/op	2353.13 MB/s	 1051072 B/op	       6 allocs/op
+BenchmarkChunkerCoreFindBoundary/1MiB-10  	   14750	    406784 ns/op	2577.72 MB/s	    2336 B/op	       2 allocs/op
+BenchmarkChunkerCoreFindBoundary/10MiB-10 	    1467	   4074245 ns/op	2573.67 MB/s	    2336 B/op	       2 allocs/op
+BenchmarkChunkerCoreFindBoundary/100MiB-10         	     145	  41443873 ns/op	2530.11 MB/s	    2336 B/op	       2 allocs/op
+BenchmarkChunkerPool-10                            	    1384	   4317176 ns/op	2428.85 MB/s	     808 B/op	       1 allocs/op
+BenchmarkChunkerConcurrent-10                      	    8018	    810500 ns/op	12937.40 MB/s	 1051075 B/op	       6 allocs/op
+BenchmarkChunkerTargetSizes/32KiB-10               	    1292	   4422335 ns/op	2371.09 MB/s	 1051073 B/op	       6 allocs/op
+BenchmarkChunkerTargetSizes/64KiB-10               	    1341	   4471537 ns/op	2345.00 MB/s	 1051073 B/op	       6 allocs/op
+BenchmarkChunkerTargetSizes/128KiB-10              	    1353	   4432832 ns/op	2365.48 MB/s	 1051073 B/op	       6 allocs/op
+BenchmarkChunkerTargetSizes/256KiB-10              	    1230	   4902052 ns/op	2139.06 MB/s	 1051073 B/op	       6 allocs/op
+BenchmarkChunkerTargetSizes/512KiB-10              	    1215	   4946180 ns/op	2119.97 MB/s	 2099650 B/op	       6 allocs/op
+BenchmarkChunkerTargetSizes/1MiB-10                	    1317	   4603251 ns/op	2277.90 MB/s	 4196808 B/op	       6 allocs/op
+BenchmarkChunkerNormalizationLevels/Level0-10      	    1506	   3984726 ns/op	2631.49 MB/s	 1051073 B/op	       6 allocs/op
+BenchmarkChunkerNormalizationLevels/Level1-10      	    1390	   4295824 ns/op	2440.92 MB/s	 1051073 B/op	       6 allocs/op
+BenchmarkChunkerNormalizationLevels/Level2-10      	    1345	   4453923 ns/op	2354.27 MB/s	 1051073 B/op	       6 allocs/op
+BenchmarkChunkerNormalizationLevels/Level3-10      	    1308	   4598646 ns/op	2280.18 MB/s	 1051073 B/op	       6 allocs/op
+BenchmarkChunkerNormalizationLevels/Level4-10      	    1314	   4569374 ns/op	2294.79 MB/s	 1051073 B/op	       6 allocs/op
+BenchmarkChunkerDataTypes/Random-10                	    1354	   4429410 ns/op	2367.30 MB/s	 1051072 B/op	       6 allocs/op
+BenchmarkChunkerDataTypes/Zeros-10                 	    1134	   5287247 ns/op	1983.22 MB/s	 1051072 B/op	       6 allocs/op
+BenchmarkChunkerDataTypes/Compressible-10          	    1147	   5231479 ns/op	2004.36 MB/s	 1051073 B/op	       6 allocs/op
+BenchmarkComparison_Kalbasit-10                    	
