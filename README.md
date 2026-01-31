@@ -1,5 +1,10 @@
 # fastcdc
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/kalbasit/fastcdc.svg)](https://pkg.go.dev/github.com/kalbasit/fastcdc)
+[![Go Report Card](https://goreportcard.com/badge/github.com/kalbasit/fastcdc)](https://goreportcard.com/report/github.com/kalbasit/fastcdc)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/kalbasit/fastcdc)](https://github.com/kalbasit/fastcdc)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 High-performance, thread-safe content-defined chunking (CDC) library for Go using the FastCDC algorithm with Gear hash.
 
 ## Features
