@@ -1,11 +1,9 @@
 name: CI
-
 on:
   push:
     branches:
       - main
   pull_request:
-
 jobs:
   test:
     name: Test
@@ -13,16 +11,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version-file: "go.mod"
           cache: true
-
       - name: Run tests with race detection
         run: go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
-
       - name: Upload coverage to Codecov
         # Do not run coverage if it's a fork since it won't get access to secrets
         if: github.event.pull_request.head.repo.full_name == github.repository || github.event_name == 'push'
