@@ -1,6 +1,7 @@
 package fastcdc
 
 import (
+	"errors"
 	"io"
 )
 
@@ -112,13 +113,13 @@ func (c *Chunker) Next() (Chunk, error) {
 
 	chunk := Chunk{
 		Offset: c.offset,
-		Length: uint32(boundary),
+		Length: uint32(boundary), //nolint:gosec // G115
 		Hash:   hash,
 		Data:   available[:boundary],
 	}
 
 	c.cursor += boundary
-	c.offset += uint64(boundary)
+	c.offset += uint64(boundary) //nolint:gosec // G115
 	c.core.Reset()
 
 	return chunk, nil

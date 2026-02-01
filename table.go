@@ -3,6 +3,8 @@ package fastcdc
 // defaultGearTable contains 256 random uint64 values for the Gear hash.
 // This is a compile-time constant to enable zero-allocation chunking.
 // Values generated using a seeded PRNG for reproducibility.
+//
+//nolint:gochecknoglobals
 var defaultGearTable = [256]uint64{
 	0x5c95c078, 0x22408989, 0x2d48a214, 0x12842087,
 	0x530f8afb, 0x474536b9, 0x2963b4f1, 0x44cb738b,

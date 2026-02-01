@@ -28,17 +28,14 @@ func main() {
 	}
 
 	// Process chunks
-	var (
-		totalSize  uint64
-		chunkCount int
-	)
+	var totalSize uint64
+	var chunkCount int
 
 	for {
 		chunk, err := chunker.Next()
 		if err == io.EOF {
 			break
 		}
-
 		if err != nil {
 			panic(err)
 		}
@@ -54,7 +51,7 @@ func main() {
 	fmt.Printf("Average chunk size: %d bytes\n", totalSize/uint64(chunkCount))
 }
 
-// bytesReader wraps a byte slice to implement io.Reader.
+// bytesReader wraps a byte slice to implement io.Reader
 type bytesReader struct {
 	data []byte
 	pos  int
@@ -64,9 +61,7 @@ func (r *bytesReader) Read(p []byte) (n int, err error) {
 	if r.pos >= len(r.data) {
 		return 0, io.EOF
 	}
-
 	n = copy(p, r.data[r.pos:])
 	r.pos += n
-
 	return n, nil
 }

@@ -1,6 +1,26 @@
 package fastcdc
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
+
+var (
+	// ErrInvalidMinSize is returned when minSize is 0.
+	ErrInvalidMinSize = errors.New("minSize must be greater than 0")
+
+	// ErrInvalidTargetSize is returned when targetSize is 0 or less than minSize.
+	ErrInvalidTargetSize = errors.New("targetSize must be greater than 0 and minSize")
+
+	// ErrInvalidMaxSize is returned when maxSize is 0 or less than targetSize.
+	ErrInvalidMaxSize = errors.New("maxSize must be greater than 0 and targetSize")
+
+	// ErrInvalidNormLevel is returned when normLevel is not between 0 and 8.
+	ErrInvalidNormLevel = errors.New("normLevel must be between 0 and 8")
+
+	// ErrInvalidBufferSize is returned when bufferSize is 0.
+	ErrInvalidBufferSize = errors.New("bufferSize must be greater than 0")
+)
 
 const (
 	// DefaultMinSize is the default minimum chunk size (16 KiB).
@@ -48,19 +68,19 @@ func defaultConfig() *config {
 // validate checks that the configuration is valid.
 func (c *config) validate() error {
 	if c.minSize == 0 {
-		return fmt.Errorf("minSize must be greater than 0")
+		return ErrInvalidMinSize
 	}
 
 	if c.targetSize <= c.minSize {
-		return fmt.Errorf("targetSize (%d) must be greater than minSize (%d)", c.targetSize, c.minSize)
+		return fmt.Errorf("%w: targetSize (%d), minSize (%d)", ErrInvalidTargetSize, c.targetSize, c.minSize)
 	}
 
 	if c.maxSize <= c.targetSize {
-		return fmt.Errorf("maxSize (%d) must be greater than targetSize (%d)", c.maxSize, c.targetSize)
+		return fmt.Errorf("%w: maxSize (%d), targetSize (%d)", ErrInvalidMaxSize, c.maxSize, c.targetSize)
 	}
 
 	if c.normLevel > 8 {
-		return fmt.Errorf("normLevel must be between 0 and 8, got %d", c.normLevel)
+		return fmt.Errorf("%w: got %d", ErrInvalidNormLevel, c.normLevel)
 	}
 	// Auto-adjust buffer size if needed
 	if c.bufferSize < int(c.maxSize) {
@@ -104,7 +124,7 @@ func (c *config) computeMasks() (maskS, maskL uint64, normSize uint32, bits uint
 func WithMinSize(size uint32) Option {
 	return func(c *config) error {
 		if size == 0 {
-			return fmt.Errorf("minSize must be greater than 0")
+			return ErrInvalidMinSize
 		}
 
 		c.minSize = size
@@ -117,7 +137,7 @@ func WithMinSize(size uint32) Option {
 func WithTargetSize(size uint32) Option {
 	return func(c *config) error {
 		if size == 0 {
-			return fmt.Errorf("targetSize must be greater than 0")
+			return ErrInvalidTargetSize
 		}
 
 		c.targetSize = size
@@ -130,7 +150,7 @@ func WithTargetSize(size uint32) Option {
 func WithMaxSize(size uint32) Option {
 	return func(c *config) error {
 		if size == 0 {
-			return fmt.Errorf("maxSize must be greater than 0")
+			return ErrInvalidMaxSize
 		}
 
 		c.maxSize = size
@@ -145,7 +165,7 @@ func WithMaxSize(size uint32) Option {
 func WithNormalization(level uint8) Option {
 	return func(c *config) error {
 		if level > 8 {
-			return fmt.Errorf("normLevel must be between 0 and 8, got %d", level)
+			return fmt.Errorf("%w: got %d", ErrInvalidNormLevel, level)
 		}
 
 		c.normLevel = level
@@ -169,7 +189,7 @@ func WithSeed(seed uint64) Option {
 func WithBufferSize(size int) Option {
 	return func(c *config) error {
 		if size <= 0 {
-			return fmt.Errorf("bufferSize must be greater than 0")
+			return ErrInvalidBufferSize
 		}
 
 		c.bufferSize = size

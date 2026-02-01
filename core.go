@@ -121,6 +121,8 @@ func (c *ChunkerCore) Reset() {
 //	        // Continue with remaining data: buf[boundary:n]
 //	    }
 //	}
+//
+//nolint:nestif
 func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, found bool) {
 	dataLen := len(data)
 	if dataLen == 0 {
@@ -332,8 +334,8 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 		}
 
 		pos += end
-		data = data[end:]
-		dataLen -= end
+		// data = data[end:] (unused)
+		// dataLen -= end (unused)
 	}
 
 	// Phase 3: Hard limit at maxSize
@@ -346,7 +348,7 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 
 	// No boundary found, save state for next call
 	c.fingerprint = fp
-	c.position = uint32(pos)
+	c.position = uint32(pos) //nolint:gosec // G115
 
 	return pos, fp, false
 }
