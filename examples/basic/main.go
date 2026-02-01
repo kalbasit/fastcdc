@@ -35,7 +35,7 @@ func main() {
 
 	for {
 		chunk, err := chunker.Next()
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			break
 		}
 
