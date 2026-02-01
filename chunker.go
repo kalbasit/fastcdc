@@ -77,7 +77,7 @@ func (c *Chunker) fillBuffer() error {
 
 	// Fill the rest of the buffer
 	m, err := io.ReadFull(c.reader, c.buf[n:])
-	if err == io.EOF || errors.Is(err, io.ErrUnexpectedEOF) {
+if errors.Is(err, io.EOF) || errors.Is(err, io.ErrUnexpectedEOF) {
 		c.buf = c.buf[:n+m]
 		c.eof = true
 	} else if err != nil {
