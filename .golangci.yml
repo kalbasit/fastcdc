@@ -15,9 +15,6 @@ formatters:
       custom-order: true
   exclusions:
     generated: lax
-    paths:
-      - examples/basic/
-      - examples/advanced/
 linters:
   enable:
     - err113
@@ -62,9 +59,6 @@ linters:
       - common-false-positives
       - legacy
       - std-error-handling
-    paths:
-      - examples/basic/
-      - examples/advanced/
   settings:
     wsl_v5:
       allow-first-in-block: true
