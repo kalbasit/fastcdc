@@ -23,13 +23,13 @@ func BenchmarkRestic(b *testing.B) {
 	}
 
 	pol := chunker.Pol(0x3DA3358B4DC173)
+	buf := make([]byte, maxChunkSize)
 
 	b.SetBytes(benchmarkSize)
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
 		c := chunker.New(bytes.NewReader(data), pol)
-		buf := make([]byte, maxChunkSize)
 		for {
 			chunk, err := c.Next(buf)
 			if err == io.EOF {

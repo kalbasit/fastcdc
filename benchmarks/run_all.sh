@@ -76,7 +76,7 @@ BEGIN {
         algo = "Gear hash"
     } else if (benchmark ~ /Restic/) {
         lib = "restic/chunker"
-        algo = "Rabin"
+        algo = "Rabin fingerprint"
     }
 
     # Extract throughput (e.g., "2259.47 MB/s")
