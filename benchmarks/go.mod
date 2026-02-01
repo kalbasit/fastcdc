@@ -9,3 +9,5 @@ require (
 )
 
 replace github.com/kalbasit/fastcdc => ../
+
+replace github.com/jotfs/fastcdc-go => github.com/buildbuddy-io/fastcdc-go v0.2.0-rc3

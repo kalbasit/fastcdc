@@ -199,10 +199,12 @@ Benchmarked on Apple M4, 10 MiB random data, 64 KiB target chunk size:
 | Library | Throughput | Allocations | Bytes/op | Algorithm |
 |---------|------------|-------------|----------|-----------|
 | **fastcdc (FindBoundary)** | **2495 MB/s** | **0 allocs/op** | **0 B** | Gear hash |
-| **fastcdc (Next)** | **2312 MB/s** | 6 allocs/op | 1026 KiB | Gear hash |
+| **fastcdc (Next)** | **2384 MB/s** | 6 allocs/op | 1026 KiB | Gear hash |
+| **fastcdc (Next, no norm)** | **2536 MB/s** | 6 allocs/op | 1026 KiB | Gear hash |
 | **fastcdc (Pool)** | **2402 MB/s** | 1 allocs/op | 1 KiB | Gear hash |
-| jotfs/fastcdc-go | 2212 MB/s | 3 allocs/op | 512 KiB | Gear hash |
-| restic/chunker | 818 MB/s | 31 allocs/op | 26882 KiB | Rabin fingerprint |
+| jotfs/fastcdc-go | 2309 MB/s | 3 allocs/op | 512 KiB | Gear hash |
+| buildbuddy-io/fastcdc-go | 2292 MB/s | 3 allocs/op | 512 KiB | Gear hash |
+| restic/chunker | 693 MB/s | 26 allocs/op | 32229 KiB | Rabin fingerprint |
 
 **Note**: The `FindBoundary()` zero-allocation API provides superior performance. The streaming `Next()` API offers convenience with reasonable allocation overhead.
 
@@ -212,15 +214,16 @@ To run the comparison benchmark yourself:
 
 ```bash
 cd benchmarks
-./run_comparison.sh
+./run_all.sh
 ```
 
-This will benchmark all three libraries with identical test data and configurations, displaying:
+This will benchmark all libraries with identical test data and configurations, displaying:
 - Throughput (MB/s)
 - Allocations per operation
 - Bytes allocated per operation
+- Algorithm used
 
-The raw benchmark results are saved to `benchmarks/benchmark_results.txt`.
+The new benchmark structure isolates each library in its own directory with independent dependencies, making it easy to add or update library versions. Raw results are saved to `benchmarks/all_results.txt`.
 
 ## When to Use Each API
 

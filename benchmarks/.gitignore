@@ -1,2 +1,12 @@
+# Benchmark results
 benchmark_results.txt
+all_results.txt
+benchmark_*.txt
+
+# Go module files
 go.sum
+libs/*/go.sum
+
+# Binary and profile outputs
+*.test
+*.prof
