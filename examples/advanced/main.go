@@ -60,7 +60,9 @@ func main() {
 	}
 
 	fmt.Printf("\nTotal: %d chunks, %d bytes\n", chunkCount, totalSize)
-	fmt.Printf("Average chunk size: %d bytes\n", totalSize/uint64(chunkCount)) //nolint:gosec // G115
+	if chunkCount > 0 {
+		fmt.Printf("Average chunk size: %d bytes\n", totalSize/uint64(chunkCount)) //nolint:gosec // G115
+	}
 	fmt.Println("\nThis example uses the zero-allocation FindBoundary() API")
 	fmt.Println("for maximum performance in tight loops.")
 }
