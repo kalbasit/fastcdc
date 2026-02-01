@@ -90,6 +90,7 @@ func (c *ChunkerCore) Reset() {
 //	        // Continue with remaining data: buf[boundary:n]
 //	    }
 //	}
+//
 // FindBoundary scans the provided data for a chunk boundary.
 // It returns:
 //   - boundary: the index of the chunk boundary (exclusive)
@@ -165,6 +166,7 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 			if (fp & maskS) == 0 {
 				c.fingerprint = fp
 				c.position = 0
+
 				return pos + i + 1, fp, true
 			}
 			// 2
@@ -172,6 +174,7 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 			if (fp & maskS) == 0 {
 				c.fingerprint = fp
 				c.position = 0
+
 				return pos + i + 2, fp, true
 			}
 			// 3
@@ -179,6 +182,7 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 			if (fp & maskS) == 0 {
 				c.fingerprint = fp
 				c.position = 0
+
 				return pos + i + 3, fp, true
 			}
 			// 4
@@ -186,6 +190,7 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 			if (fp & maskS) == 0 {
 				c.fingerprint = fp
 				c.position = 0
+
 				return pos + i + 4, fp, true
 			}
 			// 5
@@ -193,6 +198,7 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 			if (fp & maskS) == 0 {
 				c.fingerprint = fp
 				c.position = 0
+
 				return pos + i + 5, fp, true
 			}
 			// 6
@@ -200,6 +206,7 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 			if (fp & maskS) == 0 {
 				c.fingerprint = fp
 				c.position = 0
+
 				return pos + i + 6, fp, true
 			}
 			// 7
@@ -207,6 +214,7 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 			if (fp & maskS) == 0 {
 				c.fingerprint = fp
 				c.position = 0
+
 				return pos + i + 7, fp, true
 			}
 			// 8
@@ -214,6 +222,7 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 			if (fp & maskS) == 0 {
 				c.fingerprint = fp
 				c.position = 0
+
 				return pos + i + 8, fp, true
 			}
 		}
@@ -224,6 +233,7 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 			if (fp & maskS) == 0 {
 				c.fingerprint = fp
 				c.position = 0
+
 				return pos + i + 1, fp, true
 			}
 		}
@@ -249,6 +259,7 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 			if (fp & maskL) == 0 {
 				c.fingerprint = fp
 				c.position = 0
+
 				return pos + i + 1, fp, true
 			}
 			// 2
@@ -256,6 +267,7 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 			if (fp & maskL) == 0 {
 				c.fingerprint = fp
 				c.position = 0
+
 				return pos + i + 2, fp, true
 			}
 			// 3
@@ -263,6 +275,7 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 			if (fp & maskL) == 0 {
 				c.fingerprint = fp
 				c.position = 0
+
 				return pos + i + 3, fp, true
 			}
 			// 4
@@ -270,6 +283,7 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 			if (fp & maskL) == 0 {
 				c.fingerprint = fp
 				c.position = 0
+
 				return pos + i + 4, fp, true
 			}
 			// 5
@@ -277,6 +291,7 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 			if (fp & maskL) == 0 {
 				c.fingerprint = fp
 				c.position = 0
+
 				return pos + i + 5, fp, true
 			}
 			// 6
@@ -284,6 +299,7 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 			if (fp & maskL) == 0 {
 				c.fingerprint = fp
 				c.position = 0
+
 				return pos + i + 6, fp, true
 			}
 			// 7
@@ -291,6 +307,7 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 			if (fp & maskL) == 0 {
 				c.fingerprint = fp
 				c.position = 0
+
 				return pos + i + 7, fp, true
 			}
 			// 8
@@ -298,6 +315,7 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 			if (fp & maskL) == 0 {
 				c.fingerprint = fp
 				c.position = 0
+
 				return pos + i + 8, fp, true
 			}
 		}
@@ -308,6 +326,7 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 			if (fp & maskL) == 0 {
 				c.fingerprint = fp
 				c.position = 0
+
 				return pos + i + 1, fp, true
 			}
 		}
@@ -321,12 +340,14 @@ func (c *ChunkerCore) FindBoundary(data []byte) (boundary int, hash uint64, foun
 	if pos >= maxSize {
 		c.fingerprint = fp
 		c.position = 0 // Reset for next chunk
+
 		return pos, fp, true
 	}
 
 	// No boundary found, save state for next call
 	c.fingerprint = fp
 	c.position = uint32(pos)
+
 	return pos, fp, false
 }
 

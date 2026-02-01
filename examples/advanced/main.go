@@ -24,8 +24,11 @@ func main() {
 	}
 
 	// Process chunks using zero-allocation API
-	var totalSize uint64
-	var chunkCount int
+	var (
+		totalSize  uint64
+		chunkCount int
+	)
+
 	offset := 0
 
 	for offset < len(data) {
@@ -40,6 +43,7 @@ func main() {
 				chunkCount, offset, chunkSize, hash)
 
 			offset += int(chunkSize)
+
 			core.Reset()
 		} else {
 			// Handle final partial chunk
@@ -50,6 +54,7 @@ func main() {
 				fmt.Printf("Chunk %3d: offset=%8d length=%6d (final)\n",
 					chunkCount, offset, remaining)
 			}
+
 			break
 		}
 	}

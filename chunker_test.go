@@ -22,6 +22,7 @@ func TestChunkerNext(t *testing.T) {
 	}
 
 	var chunks []Chunk
+
 	totalSize := uint64(0)
 
 	for {
@@ -29,6 +30,7 @@ func TestChunkerNext(t *testing.T) {
 		if err == io.EOF {
 			break
 		}
+
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -40,6 +42,7 @@ func TestChunkerNext(t *testing.T) {
 		if chunk.Length < DefaultMinSize && chunk.Offset+uint64(chunk.Length) != uint64(len(data)) {
 			t.Errorf("Chunk too small: %d bytes at offset %d (not final chunk)", chunk.Length, chunk.Offset)
 		}
+
 		if chunk.Length > DefaultMaxSize {
 			t.Errorf("Chunk too large: %d bytes at offset %d", chunk.Length, chunk.Offset)
 		}
@@ -69,6 +72,7 @@ func TestChunkerCoreFind(t *testing.T) {
 	}
 
 	var chunks int
+
 	totalSize := uint64(0)
 	offset := 0
 
@@ -84,6 +88,7 @@ func TestChunkerCoreFind(t *testing.T) {
 			if chunkSize < DefaultMinSize && offset+int(chunkSize) != len(data) {
 				t.Errorf("Chunk too small: %d bytes at offset %d", chunkSize, offset)
 			}
+
 			if chunkSize > DefaultMaxSize {
 				t.Errorf("Chunk too large: %d bytes at offset %d", chunkSize, offset)
 			}
@@ -93,13 +98,16 @@ func TestChunkerCoreFind(t *testing.T) {
 			}
 
 			offset += int(chunkSize)
+
 			core.Reset()
 		} else {
 			// No boundary found, this should only happen at the very end
 			if offset+boundary != len(data) {
 				t.Errorf("No boundary found but not at end: offset=%d, boundary=%d, len=%d", offset, boundary, len(data))
 			}
+
 			totalSize += uint64(len(data) - offset)
+
 			break
 		}
 	}
@@ -120,17 +128,22 @@ func TestChunkerDeterminism(t *testing.T) {
 
 	getChunks := func() []Chunk {
 		chunker, _ := NewChunker(bytes.NewReader(data), WithTargetSize(64*1024))
+
 		var chunks []Chunk
+
 		for {
 			chunk, err := chunker.Next()
 			if err == io.EOF {
 				break
 			}
+
 			if err != nil {
 				t.Fatal(err)
 			}
+
 			chunks = append(chunks, chunk)
 		}
+
 		return chunks
 	}
 
@@ -145,9 +158,11 @@ func TestChunkerDeterminism(t *testing.T) {
 		if chunks1[i].Offset != chunks2[i].Offset {
 			t.Errorf("Chunk %d offset mismatch: %d vs %d", i, chunks1[i].Offset, chunks2[i].Offset)
 		}
+
 		if chunks1[i].Length != chunks2[i].Length {
 			t.Errorf("Chunk %d length mismatch: %d vs %d", i, chunks1[i].Length, chunks2[i].Length)
 		}
+
 		if chunks1[i].Hash != chunks2[i].Hash {
 			t.Errorf("Chunk %d hash mismatch: %x vs %x", i, chunks1[i].Hash, chunks2[i].Hash)
 		}
@@ -156,8 +171,11 @@ func TestChunkerDeterminism(t *testing.T) {
 
 // TestChunkerBoundaries verifies min/max enforcement.
 func TestChunkerBoundaries(t *testing.T) {
-	const minSize = 16 * 1024
-	const maxSize = 128 * 1024
+	const (
+		minSize = 16 * 1024
+		maxSize = 128 * 1024
+	)
+
 	data := make([]byte, 1024*1024)
 	if _, err := rand.Read(data); err != nil {
 		t.Fatal(err)
@@ -178,6 +196,7 @@ func TestChunkerBoundaries(t *testing.T) {
 		if err == io.EOF {
 			break
 		}
+
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -187,6 +206,7 @@ func TestChunkerBoundaries(t *testing.T) {
 		if chunk.Length < minSize && !isLastChunk {
 			t.Errorf("Chunk below minimum: %d bytes at offset %d", chunk.Length, chunk.Offset)
 		}
+
 		if chunk.Length > maxSize {
 			t.Errorf("Chunk above maximum: %d bytes at offset %d", chunk.Length, chunk.Offset)
 		}
@@ -201,10 +221,12 @@ func TestChunkerThreadSafety(t *testing.T) {
 	}
 
 	var wg sync.WaitGroup
+
 	const workers = 10
 
 	for i := 0; i < workers; i++ {
 		wg.Add(1)
+
 		go func() {
 			defer wg.Done()
 
@@ -212,19 +234,24 @@ func TestChunkerThreadSafety(t *testing.T) {
 			chunker, err := NewChunker(bytes.NewReader(data), WithTargetSize(64*1024))
 			if err != nil {
 				t.Error(err)
+
 				return
 			}
 
 			totalSize := uint64(0)
+
 			for {
 				chunk, err := chunker.Next()
 				if err == io.EOF {
 					break
 				}
+
 				if err != nil {
 					t.Error(err)
+
 					return
 				}
+
 				totalSize += uint64(chunk.Length)
 			}
 
@@ -250,14 +277,17 @@ func TestChunkerDistribution(t *testing.T) {
 	}
 
 	var sizes []float64
+
 	for {
 		chunk, err := chunker.Next()
 		if err == io.EOF {
 			break
 		}
+
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		sizes = append(sizes, float64(chunk.Length))
 	}
 
@@ -270,14 +300,17 @@ func TestChunkerDistribution(t *testing.T) {
 	for _, size := range sizes {
 		sum += size
 	}
+
 	mean := sum / float64(len(sizes))
 
 	// Calculate standard deviation
 	var variance float64
+
 	for _, size := range sizes {
 		diff := size - mean
 		variance += diff * diff
 	}
+
 	variance /= float64(len(sizes))
 	stddev := math.Sqrt(variance)
 
@@ -299,17 +332,22 @@ func TestChunkerSeed(t *testing.T) {
 
 	getChunks := func(seed uint64) []Chunk {
 		chunker, _ := NewChunker(bytes.NewReader(data), WithTargetSize(64*1024), WithSeed(seed))
+
 		var chunks []Chunk
+
 		for {
 			chunk, err := chunker.Next()
 			if err == io.EOF {
 				break
 			}
+
 			if err != nil {
 				t.Fatal(err)
 			}
+
 			chunks = append(chunks, chunk)
 		}
+
 		return chunks
 	}
 
@@ -324,6 +362,7 @@ func TestChunkerSeed(t *testing.T) {
 		for i := range chunks1 {
 			if chunks1[i].Length != chunks2[i].Length {
 				same = false
+
 				break
 			}
 		}
@@ -340,9 +379,11 @@ func TestChunkerSeed(t *testing.T) {
 func TestChunkerReset(t *testing.T) {
 	data1 := make([]byte, 256*1024)
 	data2 := make([]byte, 512*1024)
+
 	if _, err := rand.Read(data1); err != nil {
 		t.Fatal(err)
 	}
+
 	if _, err := rand.Read(data2); err != nil {
 		t.Fatal(err)
 	}
@@ -354,14 +395,17 @@ func TestChunkerReset(t *testing.T) {
 
 	// Process first stream
 	var count1 int
+
 	for {
 		_, err := chunker.Next()
 		if err == io.EOF {
 			break
 		}
+
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		count1++
 	}
 
@@ -369,14 +413,17 @@ func TestChunkerReset(t *testing.T) {
 	chunker.Reset(bytes.NewReader(data2))
 
 	var count2 int
+
 	for {
 		_, err := chunker.Next()
 		if err == io.EOF {
 			break
 		}
+
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		count2++
 	}
 
@@ -406,14 +453,17 @@ func TestChunkerPool(t *testing.T) {
 	}
 
 	var chunks int
+
 	for {
 		_, err := chunker.Next()
 		if err == io.EOF {
 			break
 		}
+
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		chunks++
 	}
 
@@ -427,14 +477,17 @@ func TestChunkerPool(t *testing.T) {
 	}
 
 	var chunks2 int
+
 	for {
 		_, err := chunker.Next()
 		if err == io.EOF {
 			break
 		}
+
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		chunks2++
 	}
 

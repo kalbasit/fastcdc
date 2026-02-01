@@ -82,5 +82,6 @@ func generateTable(seed uint64) [256]uint64 {
 	for i := 0; i < 256; i++ {
 		table[i] = defaultGearTable[i] ^ seed
 	}
+
 	return table
 }

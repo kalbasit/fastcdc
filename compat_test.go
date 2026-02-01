@@ -27,8 +27,9 @@ import (
 	"encoding/hex"
 	"io"
 	"log"
-	mathrand "math/rand"
 	"testing"
+
+	mathrand "math/rand"
 )
 
 // TestJotfsCompatibility_ExactChunks is a reference test showing jotfs output
@@ -88,11 +89,11 @@ func TestJotfsCompatibility_ExactChunks(t *testing.T) {
 	// Our API: MinSize = AverageSize/4, TargetSize = AverageSize, MaxSize = AverageSize*4
 	chunker, err := NewChunker(
 		bytes.NewReader(data),
-		WithMinSize(256),      // 1024/4
-		WithTargetSize(1024),  // AverageSize
-		WithMaxSize(4096),     // 1024*4
-		WithSeed(84372),       // Same seed
-		WithNormalization(2),  // jotfs default
+		WithMinSize(256),     // 1024/4
+		WithTargetSize(1024), // AverageSize
+		WithMaxSize(4096),    // 1024*4
+		WithSeed(84372),      // Same seed
+		WithNormalization(2), // jotfs default
 	)
 	if err != nil {
 		t.Fatal(err)
@@ -104,8 +105,10 @@ func TestJotfsCompatibility_ExactChunks(t *testing.T) {
 			if i != len(expectedChunks) {
 				t.Errorf("expected %d chunks but got %d", len(expectedChunks), i)
 			}
+
 			break
 		}
+
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -120,12 +123,15 @@ func TestJotfsCompatibility_ExactChunks(t *testing.T) {
 		if chunk.Offset != expected.offset {
 			t.Errorf("chunk %d: expected offset %d but got %d", i, expected.offset, chunk.Offset)
 		}
+
 		if chunk.Length != expected.length {
 			t.Errorf("chunk %d: expected length %d but got %d", i, expected.length, chunk.Length)
 		}
+
 		if chunk.Hash != expected.fingerprint {
 			t.Errorf("chunk %d: expected fingerprint %x but got %x", i, expected.fingerprint, chunk.Hash)
 		}
+
 		if !bytes.Equal(chunk.Data, expectedData) {
 			t.Errorf("chunk %d: data mismatch (expected %d bytes, got %d bytes)", i, len(expectedData), len(chunk.Data))
 		}
@@ -151,15 +157,18 @@ func TestJotfsCompatibility_RandomData(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	var prevOffset uint64
-	var prevLength uint32
-	var allData []byte
+	var (
+		prevOffset uint64
+		prevLength uint32
+		allData    []byte
+	)
 
 	for i := 0; ; i++ {
 		chunk, err := chunker.Next()
 		if err == io.EOF {
 			break
 		}
+
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -168,6 +177,7 @@ func TestJotfsCompatibility_RandomData(t *testing.T) {
 		if chunk.Offset != expectedOffset {
 			t.Errorf("chunk %d: offset should be %d not %d", i, expectedOffset, chunk.Offset)
 		}
+
 		if chunk.Length != uint32(len(chunk.Data)) {
 			t.Errorf("chunk %d: length %d does not match len(Data) %d", i, chunk.Length, len(chunk.Data))
 		}
@@ -211,6 +221,7 @@ func TestJotfsCompatibility_MinSize(t *testing.T) {
 	if !bytes.Equal(data, chunk.Data) {
 		t.Error("data not equal")
 	}
+
 	if chunk.Length != uint32(len(data)) {
 		t.Errorf("invalid length %d, expected %d", chunk.Length, len(data))
 	}
@@ -249,14 +260,17 @@ func TestResticCompatibility_DataRecovery(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			var recovered []byte
-			var chunkCount int
+			var (
+				recovered  []byte
+				chunkCount int
+			)
 
 			for {
 				chunk, err := chunker.Next()
 				if err == io.EOF {
 					break
 				}
+
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -300,11 +314,13 @@ func TestResticCompatibility_ChunkSizeBounds(t *testing.T) {
 	}
 
 	var chunks []int
+
 	for {
 		chunk, err := chunker.Next()
 		if err == io.EOF {
 			break
 		}
+
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -335,14 +351,17 @@ func decodeHex(s string) []byte {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	return b
 }
 
 func randBytes(n int, seed int64) []byte {
 	b := make([]byte, n)
+
 	rnd := mathrand.New(mathrand.NewSource(seed))
 	if _, err := rnd.Read(b); err != nil {
 		log.Fatal(err)
 	}
+
 	return b
 }
