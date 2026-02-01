@@ -51,7 +51,10 @@ func main() {
 	}
 
 	fmt.Printf("\nTotal: %d chunks, %d bytes\n", chunkCount, totalSize)
-	fmt.Printf("Average chunk size: %d bytes\n", totalSize/uint64(chunkCount)) //nolint:gosec // G115
+
+	if chunkCount > 0 {
+		fmt.Printf("Average chunk size: %d bytes\n", totalSize/uint64(chunkCount))
+	}
 }
 
 // bytesReader wraps a byte slice to implement io.Reader.
