@@ -1,0 +1,66 @@
+version: "2"
+formatters:
+  enable:
+    - gci
+    - gofumpt
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - alias
+        - prefix(github.com/kalbasit/fastcdc)
+        - blank
+        - dot
+      custom-order: true
+  exclusions:
+    generated: lax
+linters:
+  enable:
+    - err113
+    - errname
+    - exhaustive
+    - gochecknoglobals
+    - gochecknoinits
+    - goconst
+    - godot
+    - goheader
+    - gosec
+    - importas
+    - lll
+    - makezero
+    - misspell
+    - nakedret
+    - nestif
+    - nilerr
+    - nilnil
+    - nlreturn
+    - noctx
+    - nolintlint
+    - paralleltest
+    - prealloc
+    - predeclared
+    - revive
+    - rowserrcheck
+    - staticcheck
+    - tagliatelle
+    - testifylint
+    - testpackage
+    - unconvert
+    - unparam
+    - wastedassign
+    - whitespace
+    - wsl_v5
+    - zerologlint
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+  settings:
+    wsl_v5:
+      allow-first-in-block: true
+      allow-whole-block: false
+      branch-max-lines: 2

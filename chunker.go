@@ -1,6 +1,7 @@
 package fastcdc
 
 import (
+	"errors"
 	"io"
 )
 
@@ -21,10 +22,10 @@ type Chunker struct {
 	core   *ChunkerCore // Core chunking algorithm
 	reader io.Reader    // Input stream
 
-	buf      []byte // Internal buffer
-	cursor   int    // Current position in buffer
-	offset   uint64 // Absolute offset in stream
-	eof      bool   // EOF reached
+	buf    []byte // Internal buffer
+	cursor int    // Current position in buffer
+	offset uint64 // Absolute offset in stream
+	eof    bool   // EOF reached
 }
 
 // NewChunker creates a new Chunker that reads from the given io.Reader.
@@ -70,17 +71,19 @@ func (c *Chunker) fillBuffer() error {
 
 	if c.eof {
 		c.buf = c.buf[:n]
+
 		return nil
 	}
 
 	// Fill the rest of the buffer
 	m, err := io.ReadFull(c.reader, c.buf[n:])
-	if err == io.EOF || err == io.ErrUnexpectedEOF {
+	if errors.Is(err, io.EOF) || errors.Is(err, io.ErrUnexpectedEOF) {
 		c.buf = c.buf[:n+m]
 		c.eof = true
 	} else if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -93,6 +96,7 @@ func (c *Chunker) Next() (Chunk, error) {
 	if err := c.fillBuffer(); err != nil {
 		return Chunk{}, err
 	}
+
 	if len(c.buf) == 0 {
 		return Chunk{}, io.EOF
 	}
@@ -109,13 +113,13 @@ func (c *Chunker) Next() (Chunk, error) {
 
 	chunk := Chunk{
 		Offset: c.offset,
-		Length: uint32(boundary),
+		Length: uint32(boundary), //nolint:gosec // G115
 		Hash:   hash,
 		Data:   available[:boundary],
 	}
 
 	c.cursor += boundary
-	c.offset += uint64(boundary)
+	c.offset += uint64(boundary) //nolint:gosec // G115
 	c.core.Reset()
 
 	return chunk, nil
@@ -127,7 +131,7 @@ func (c *Chunker) Reset(r io.Reader) {
 	c.reader = r
 	c.core.Reset()
 	c.buf = c.buf[:cap(c.buf)] // Restore buffer to full capacity
-	c.cursor = len(c.buf)        // Start with empty buffer
+	c.cursor = len(c.buf)      // Start with empty buffer
 	c.offset = 0
 	c.eof = false
 }

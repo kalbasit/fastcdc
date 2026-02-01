@@ -42,10 +42,10 @@
 // similar chunking quality.
 //
 // The chunking process uses normalized chunking with two-phase boundary detection:
-//   1. Skip to minimum size (fast-forward without checking)
-//   2. Normalized region: Check with smaller mask (more aggressive cutting)
-//   3. Standard region: Check with larger mask (less aggressive cutting)
-//   4. Hard limit: Force cut at maximum size
+//  1. Skip to minimum size (fast-forward without checking)
+//  2. Normalized region: Check with smaller mask (more aggressive cutting)
+//  3. Standard region: Check with larger mask (less aggressive cutting)
+//  4. Hard limit: Force cut at maximum size
 //
 // This approach prevents excessive tiny chunks while maintaining good distribution.
 //

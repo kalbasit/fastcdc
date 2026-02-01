@@ -24,8 +24,11 @@ func main() {
 	}
 
 	// Process chunks using zero-allocation API
-	var totalSize uint64
-	var chunkCount int
+	var (
+		totalSize  uint64
+		chunkCount int
+	)
+
 	offset := 0
 
 	for offset < len(data) {
@@ -33,13 +36,14 @@ func main() {
 
 		if found {
 			chunkCount++
-			chunkSize := uint32(boundary)
+			chunkSize := uint32(boundary) //nolint:gosec // G115
 			totalSize += uint64(chunkSize)
 
 			fmt.Printf("Chunk %3d: offset=%8d length=%6d hash=%016x\n",
 				chunkCount, offset, chunkSize, hash)
 
 			offset += int(chunkSize)
+
 			core.Reset()
 		} else {
 			// Handle final partial chunk
@@ -50,12 +54,17 @@ func main() {
 				fmt.Printf("Chunk %3d: offset=%8d length=%6d (final)\n",
 					chunkCount, offset, remaining)
 			}
+
 			break
 		}
 	}
 
 	fmt.Printf("\nTotal: %d chunks, %d bytes\n", chunkCount, totalSize)
-	fmt.Printf("Average chunk size: %d bytes\n", totalSize/uint64(chunkCount))
+
+	if chunkCount > 0 {
+		fmt.Printf("Average chunk size: %d bytes\n", totalSize/uint64(chunkCount))
+	}
+
 	fmt.Println("\nThis example uses the zero-allocation FindBoundary() API")
 	fmt.Println("for maximum performance in tight loops.")
 }

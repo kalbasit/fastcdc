@@ -32,6 +32,7 @@ func (p *ChunkerPool) Get(r io.Reader) (*Chunker, error) {
 	if v := p.pool.Get(); v != nil {
 		chunker := v.(*Chunker)
 		chunker.Reset(r)
+
 		return chunker, nil
 	}
 
@@ -71,6 +72,7 @@ func (p *ChunkerCorePool) Get() (*ChunkerCore, error) {
 	if v := p.pool.Get(); v != nil {
 		core := v.(*ChunkerCore)
 		core.Reset()
+
 		return core, nil
 	}
 
