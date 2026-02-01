@@ -9,11 +9,17 @@ var (
 	// ErrInvalidMinSize is returned when minSize is 0.
 	ErrInvalidMinSize = errors.New("minSize must be greater than 0")
 
-	// ErrInvalidTargetSize is returned when targetSize is 0 or less than minSize.
-	ErrInvalidTargetSize = errors.New("targetSize must be greater than 0 and minSize")
+	// ErrInvalidTargetSize is returned when targetSize is 0.
+	ErrInvalidTargetSize = errors.New("targetSize must be greater than 0")
 
-	// ErrInvalidMaxSize is returned when maxSize is 0 or less than targetSize.
-	ErrInvalidMaxSize = errors.New("maxSize must be greater than 0 and targetSize")
+	// ErrTargetSizeTooSmall is returned when targetSize is not greater than minSize.
+	ErrTargetSizeTooSmall = errors.New("targetSize must be greater than minSize")
+
+	// ErrInvalidMaxSize is returned when maxSize is 0.
+	ErrInvalidMaxSize = errors.New("maxSize must be greater than 0")
+
+	// ErrMaxSizeTooSmall is returned when maxSize is not greater than targetSize.
+	ErrMaxSizeTooSmall = errors.New("maxSize must be greater than targetSize")
 
 	// ErrInvalidNormLevel is returned when normLevel is not between 0 and 8.
 	ErrInvalidNormLevel = errors.New("normLevel must be between 0 and 8")
@@ -72,11 +78,11 @@ func (c *config) validate() error {
 	}
 
 	if c.targetSize <= c.minSize {
-		return fmt.Errorf("%w: targetSize (%d), minSize (%d)", ErrInvalidTargetSize, c.targetSize, c.minSize)
+		return fmt.Errorf("%w: targetSize (%d), minSize (%d)", ErrTargetSizeTooSmall, c.targetSize, c.minSize)
 	}
 
 	if c.maxSize <= c.targetSize {
-		return fmt.Errorf("%w: maxSize (%d), targetSize (%d)", ErrInvalidMaxSize, c.maxSize, c.targetSize)
+		return fmt.Errorf("%w: maxSize (%d), targetSize (%d)", ErrMaxSizeTooSmall, c.maxSize, c.targetSize)
 	}
 
 	if c.normLevel > 8 {
