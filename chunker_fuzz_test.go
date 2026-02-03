@@ -50,12 +50,12 @@ func FuzzChunker(f *testing.F) {
 			}
 
 			// Verify chunk size constraints
-			if uint32(chunk.Length) > maximum {
+			if chunk.Length > maximum {
 				t.Fatalf("chunk length %d exceeds maximum size %d", chunk.Length, maximum)
 			}
 			// The last chunk is allowed to be smaller than the minimum size.
 			isLastChunk := chunk.Offset+uint64(chunk.Length) == uint64(len(data))
-			if !isLastChunk && uint32(chunk.Length) < minimum {
+			if !isLastChunk && chunk.Length < minimum {
 				t.Fatalf("chunk length %d is less than minimum size %d", chunk.Length, minimum)
 			}
 
@@ -64,6 +64,7 @@ func FuzzChunker(f *testing.F) {
 			if chunk.Offset+uint64(chunk.Length) > uint64(len(data)) {
 				t.Fatalf("chunk is out of bounds: offset %d, length %d, data size %d", chunk.Offset, chunk.Length, len(data))
 			}
+
 			originalChunk := data[chunk.Offset : chunk.Offset+uint64(chunk.Length)]
 			if !bytes.Equal(originalChunk, chunk.Data) {
 				t.Fatal("chunk data does not match original data")
@@ -97,10 +98,11 @@ func FuzzChunkerCore(f *testing.F) {
 		}
 
 		if found {
-			if uint32(boundary) > maximum {
+			if uint32(boundary) > maximum { //nolint:gosec // G115
 				t.Errorf("boundary %d exceeds maximum size %d", boundary, maximum)
 			}
-			if uint32(boundary) < minimum {
+
+			if uint32(boundary) < minimum { //nolint:gosec // G115
 				t.Errorf("boundary %d is less than minimum size %d", boundary, minimum)
 			}
 		}
