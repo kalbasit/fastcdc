@@ -33,10 +33,7 @@ func FuzzChunker(f *testing.F) {
 			return
 		}
 
-		var (
-			reconstructed []byte
-			totalLength   uint64
-		)
+		var totalLength uint64
 
 		for {
 			chunk, err := c.Next()
@@ -52,20 +49,31 @@ func FuzzChunker(f *testing.F) {
 				t.Fatal("chunk length is 0")
 			}
 
-			reconstructed = append(reconstructed, chunk.Data...)
-			totalLength += uint64(chunk.Length)
+			// Verify chunk size constraints
+			if uint32(chunk.Length) > maximum {
+				t.Fatalf("chunk length %d exceeds maximum size %d", chunk.Length, maximum)
+			}
+			// The last chunk is allowed to be smaller than the minimum size.
+			isLastChunk := chunk.Offset+uint64(chunk.Length) == uint64(len(data))
+			if !isLastChunk && uint32(chunk.Length) < minimum {
+				t.Fatalf("chunk length %d is less than minimum size %d", chunk.Length, minimum)
+			}
 
-			// Verify chunk size constraints (except for final chunk)
-			// Note: c.eof is not exported, but we can check if it's the last chunk by trying Next()
-			// Actually, let's just check length <= max always, and length >= min if not at EOF.
+			// Verify that the chunk data matches the original data slice.
+			// This is more memory-efficient than reconstructing the entire data.
+			if chunk.Offset+uint64(chunk.Length) > uint64(len(data)) {
+				t.Fatalf("chunk is out of bounds: offset %d, length %d, data size %d", chunk.Offset, chunk.Length, len(data))
+			}
+			originalChunk := data[chunk.Offset : chunk.Offset+uint64(chunk.Length)]
+			if !bytes.Equal(originalChunk, chunk.Data) {
+				t.Fatal("chunk data does not match original data")
+			}
+
+			totalLength += uint64(chunk.Length)
 		}
 
 		if uint64(len(data)) != totalLength {
 			t.Errorf("total length mismatch: got %d, want %d", totalLength, len(data))
-		}
-
-		if !bytes.Equal(data, reconstructed) {
-			t.Error("reconstructed data does not match original")
 		}
 	})
 }
@@ -83,9 +91,18 @@ func FuzzChunkerCore(f *testing.F) {
 			return
 		}
 
-		boundary, _, _ := core.FindBoundary(data)
+		boundary, _, found := core.FindBoundary(data)
 		if boundary > len(data) {
 			t.Errorf("boundary %d exceeds data length %d", boundary, len(data))
+		}
+
+		if found {
+			if uint32(boundary) > maximum {
+				t.Errorf("boundary %d exceeds maximum size %d", boundary, maximum)
+			}
+			if uint32(boundary) < minimum {
+				t.Errorf("boundary %d is less than minimum size %d", boundary, minimum)
+			}
 		}
 	})
 }
