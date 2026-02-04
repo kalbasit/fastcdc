@@ -16,11 +16,11 @@ jobs:
           - pkg: .
             func: FuzzChunkerCore
             fuzz_pattern: ^FuzzChunkerCore$
-            time: 1h
+            time: 45m
           - pkg: .
             func: FuzzChunker
             fuzz_pattern: ^FuzzChunker$
-            time: 1h
+            time: 45m
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-go@v6
@@ -42,6 +42,7 @@ jobs:
         with:
           name: ${{ env.ARTIFACT_NAME }}
           path: ${{ matrix.pkg }}/testdata/fuzz/${{ matrix.func }}
+          if-no-files-found: error
       - name: Create Issue for the crash
         if: failure() && steps.upload-step.outcome == 'success'
         env:
