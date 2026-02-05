@@ -40,8 +40,10 @@ run_benchmark() {
 }
 
 # Run benchmarks for each library
-run_benchmark "kalbasit/fastcdc (this library)" "libs/kalbasit" "BenchmarkKalbasit$"
-run_benchmark "kalbasit/fastcdc (no normalization)" "libs/kalbasit" "BenchmarkKalbasit_NoNorm"
+run_benchmark "kalbasit/fastcdc (FindBoundary)" "libs/kalbasit" "BenchmarkKalbasit_FindBoundary"
+run_benchmark "kalbasit/fastcdc (Next)" "libs/kalbasit" "BenchmarkKalbasit$"
+run_benchmark "kalbasit/fastcdc (Next, no norm)" "libs/kalbasit" "BenchmarkKalbasit_NoNorm"
+run_benchmark "kalbasit/fastcdc (Pool)" "libs/kalbasit" "BenchmarkKalbasit_Pool"
 run_benchmark "jotfs/fastcdc-go" "libs/jotfs" "BenchmarkJotfs"
 run_benchmark "buildbuddy-io/fastcdc-go" "libs/buildbuddy" "BenchmarkBuildbuddy"
 run_benchmark "restic/chunker" "libs/restic" "BenchmarkRestic"
@@ -55,18 +57,24 @@ echo ""
 awk '
 BEGIN {
     print "| Library | Throughput | Allocations | Bytes/op | Algorithm |"
-    print "|---------|------------|-------------|----------|-----------|"
+    print "|---------|------------|-------------|----------|--------------|"
 }
 /^Benchmark/ {
     # Extract benchmark name
     benchmark = $1
 
     # Determine library name
-    if (benchmark ~ /Kalbasit_NoNorm/) {
-        lib = "kalbasit/fastcdc (no norm)"
+    if (benchmark ~ /Kalbasit_FindBoundary/) {
+        lib = "fastcdc (FindBoundary)"
+        algo = "Gear hash"
+    } else if (benchmark ~ /Kalbasit_NoNorm/) {
+        lib = "fastcdc (Next, no norm)"
+        algo = "Gear hash"
+    } else if (benchmark ~ /Kalbasit_Pool/) {
+        lib = "fastcdc (Pool)"
         algo = "Gear hash"
     } else if (benchmark ~ /Kalbasit/) {
-        lib = "kalbasit/fastcdc"
+        lib = "fastcdc (Next)"
         algo = "Gear hash"
     } else if (benchmark ~ /Jotfs/) {
         lib = "jotfs/fastcdc-go"
@@ -82,11 +90,25 @@ BEGIN {
     # Extract throughput (e.g., "2259.47 MB/s")
     throughput = $5 " " $6
 
-    # Extract bytes/op and allocs/op
-    bytes_per_op = $7
-    allocs_per_op = $9
+    # Extract bytes/op and allocs/op (raw numbers)
+    bytes_per_op_raw = $7
+    allocs_per_op_raw = $9
 
-    printf "| %s | %s | %s | %s | %s |\n", lib, throughput, allocs_per_op, bytes_per_op, algo
+    # Format allocations with "allocs/op" suffix
+    allocs_formatted = allocs_per_op_raw " allocs/op"
+
+    # Convert bytes to human-readable format
+    if (bytes_per_op_raw == 0) {
+        bytes_formatted = "0 B"
+    } else if (bytes_per_op_raw < 1024) {
+        bytes_formatted = bytes_per_op_raw " B"
+    } else {
+        # Convert to KiB
+        kib = bytes_per_op_raw / 1024
+        bytes_formatted = sprintf("%.0f KiB", kib)
+    }
+
+    printf "| %s | %s | %s | %s | %s |\n", lib, throughput, allocs_formatted, bytes_formatted, algo
 }
 ' "$RESULTS_FILE"
 
