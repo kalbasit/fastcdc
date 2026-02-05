@@ -188,9 +188,9 @@ Benchmarked on 10 MiB random data with 64 KiB target chunk size:
 
 | API | Throughput | Allocations | Use Case |
 |-----|------------|-------------|----------|
-| `FindBoundary()` | ~2500 MB/s | **0 allocs/op** | Performance-critical code |
-| `Next()` | ~2300 MB/s | ~6 alloc/op | General purpose streaming |
-| `Pool` | ~2400 MB/s | ~1 alloc/op | High-throughput concurrent |
+| `FindBoundary()` | ~1350 MB/s | **0 allocs/op** | Performance-critical code |
+| `Next()` | ~1200 MB/s | ~4 alloc/op | General purpose streaming |
+| `Pool` | ~1250 MB/s | ~1 alloc/op | High-throughput concurrent |
 
 ### Comparison with Other Libraries
 
