@@ -9,8 +9,8 @@ High-performance, thread-safe content-defined chunking (CDC) library for Go usin
 
 ## Features
 
-- **High Performance**: >2300 MB/s throughput, fastest Go implementation of FastCDC
-- **Low Allocations**: ~6 allocations/op with convenient API, 0 allocations/op with advanced API
+- **High Performance**: >1350 MB/s throughput, fastest Go implementation of FastCDC
+- **Low Allocations**: ~4 allocations/op with convenient API, 0 allocations/op with advanced API
 - **Thread-Safe**: Per-instance hash tables eliminate data races
 - **Dual API**: Simple streaming API for convenience, zero-allocation API for performance
 - **Normalized Chunking**: Two-phase boundary detection for better chunk distribution
