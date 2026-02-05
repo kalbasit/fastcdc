@@ -26,9 +26,17 @@ type ChunkerCore struct {
 // NewChunkerCore creates a new ChunkerCore with the given options.
 // This is a zero-allocation API - the caller manages all buffers.
 func NewChunkerCore(opts ...Option) (*ChunkerCore, error) {
-	cfg := defaultConfig()
+	// Use stack-allocated config to avoid heap allocation
+	cfg := config{
+		minSize:    DefaultMinSize,
+		targetSize: DefaultTargetSize,
+		maxSize:    DefaultMaxSize,
+		normLevel:  DefaultNormLevel,
+		seed:       0,
+		bufferSize: DefaultBufferSize,
+	}
 	for _, opt := range opts {
-		if err := opt(cfg); err != nil {
+		if err := opt(&cfg); err != nil {
 			return nil, err
 		}
 	}
@@ -37,9 +45,18 @@ func NewChunkerCore(opts ...Option) (*ChunkerCore, error) {
 		return nil, err
 	}
 
+	core := newChunkerCoreWithConfig(&cfg)
+
+	return &core, nil
+}
+
+// newChunkerCoreWithConfig creates a new ChunkerCore from a validated config.
+// This is an internal helper to avoid duplicate config allocation.
+// Returns by value to allow embedding without heap allocation.
+func newChunkerCoreWithConfig(cfg *config) ChunkerCore {
 	maskS, maskL, normSize, bits := cfg.computeMasks()
 
-	return &ChunkerCore{
+	return ChunkerCore{
 		table:       generateTable(cfg.seed),
 		fingerprint: 0,
 		minSize:     cfg.minSize,
@@ -50,7 +67,7 @@ func NewChunkerCore(opts ...Option) (*ChunkerCore, error) {
 		bits:        bits,
 		normLevel:   cfg.normLevel,
 		position:    0,
-	}, nil
+	}
 }
 
 // Reset resets the chunker state for processing a new stream.
