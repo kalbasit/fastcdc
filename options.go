@@ -42,8 +42,9 @@ const (
 	// Determines the size of the normalization region: (targetSize - minSize) / 2^normLevel.
 	DefaultNormLevel = 2
 
-	// DefaultBufferSize is the default internal buffer size for the streaming API (1 MiB).
-	DefaultBufferSize = 1024 * 1024
+	// DefaultBufferSize is the default internal buffer size for the streaming API (512 KiB).
+	// This is 2x the default max chunk size, providing efficient buffering.
+	DefaultBufferSize = 512 * 1024
 )
 
 // Option is a function that configures a Chunker or ChunkerCore.
@@ -57,18 +58,6 @@ type config struct {
 	normLevel  uint8
 	seed       uint64
 	bufferSize int
-}
-
-// defaultConfig returns the default configuration.
-func defaultConfig() *config {
-	return &config{
-		minSize:    DefaultMinSize,
-		targetSize: DefaultTargetSize,
-		maxSize:    DefaultMaxSize,
-		normLevel:  DefaultNormLevel,
-		seed:       0,
-		bufferSize: DefaultBufferSize,
-	}
 }
 
 // validate checks that the configuration is valid.

@@ -19,8 +19,8 @@ type Chunk struct {
 // This API allocates minimally and is suitable for most use cases.
 // For zero-allocation performance-critical code, use ChunkerCore.
 type Chunker struct {
-	core   *ChunkerCore // Core chunking algorithm
-	reader io.Reader    // Input stream
+	core   ChunkerCore // Core chunking algorithm (embedded to avoid pointer allocation)
+	reader io.Reader   // Input stream
 
 	buf    []byte // Internal buffer
 	cursor int    // Current position in buffer
@@ -30,9 +30,17 @@ type Chunker struct {
 
 // NewChunker creates a new Chunker that reads from the given io.Reader.
 func NewChunker(r io.Reader, opts ...Option) (*Chunker, error) {
-	cfg := defaultConfig()
+	// Use stack-allocated config to avoid heap allocation
+	cfg := config{
+		minSize:    DefaultMinSize,
+		targetSize: DefaultTargetSize,
+		maxSize:    DefaultMaxSize,
+		normLevel:  DefaultNormLevel,
+		seed:       0,
+		bufferSize: DefaultBufferSize,
+	}
 	for _, opt := range opts {
-		if err := opt(cfg); err != nil {
+		if err := opt(&cfg); err != nil {
 			return nil, err
 		}
 	}
@@ -42,13 +50,11 @@ func NewChunker(r io.Reader, opts ...Option) (*Chunker, error) {
 		return nil, err
 	}
 
-	core, err := NewChunkerCore(opts...)
-	if err != nil {
-		return nil, err
-	}
+	// Use internal function to avoid duplicate config allocation
+	core := newChunkerCoreWithConfig(&cfg)
 
 	return &Chunker{
-		core:   core,
+		core:   core, // Embed by value to avoid heap allocation
 		reader: r,
 		buf:    make([]byte, cfg.bufferSize),
 		cursor: cfg.bufferSize, // Start with empty buffer (triggers initial read)
