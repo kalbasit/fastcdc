@@ -72,3 +72,62 @@ func BenchmarkKalbasit_NoNorm(b *testing.B) {
 		}
 	}
 }
+
+func BenchmarkKalbasit_FindBoundary(b *testing.B) {
+	data := make([]byte, benchmarkSize)
+	if _, err := rand.Read(data); err != nil {
+		b.Fatal(err)
+	}
+
+	core, _ := fastcdc.NewChunkerCore(
+		fastcdc.WithMinSize(minChunkSize),
+		fastcdc.WithTargetSize(targetChunkSize),
+		fastcdc.WithMaxSize(maxChunkSize),
+	)
+
+	b.SetBytes(benchmarkSize)
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		offset := 0
+		for offset < len(data) {
+			boundary, _, found := core.FindBoundary(data[offset:])
+			if found {
+				offset += boundary
+				core.Reset()
+			} else {
+				break
+			}
+		}
+	}
+}
+
+func BenchmarkKalbasit_Pool(b *testing.B) {
+	data := make([]byte, benchmarkSize)
+	if _, err := rand.Read(data); err != nil {
+		b.Fatal(err)
+	}
+
+	pool, _ := fastcdc.NewChunkerPool(
+		fastcdc.WithMinSize(minChunkSize),
+		fastcdc.WithTargetSize(targetChunkSize),
+		fastcdc.WithMaxSize(maxChunkSize),
+	)
+
+	b.SetBytes(benchmarkSize)
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		chunker, _ := pool.Get(bytes.NewReader(data))
+		for {
+			_, err := chunker.Next()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				b.Fatal(err)
+			}
+		}
+		pool.Put(chunker)
+	}
+}

@@ -197,14 +197,14 @@ Benchmarked on 10 MiB random data with 64 KiB target chunk size:
 Benchmarked on Apple M4, 10 MiB random data, 64 KiB target chunk size:
 
 | Library | Throughput | Allocations | Bytes/op | Algorithm |
-|---------|------------|-------------|----------|-----------|
-| **fastcdc (FindBoundary)** | **2495 MB/s** | **0 allocs/op** | **0 B** | Gear hash |
-| **fastcdc (Next)** | **2384 MB/s** | 6 allocs/op | 1026 KiB | Gear hash |
-| **fastcdc (Next, no norm)** | **2536 MB/s** | 6 allocs/op | 1026 KiB | Gear hash |
-| **fastcdc (Pool)** | **2402 MB/s** | 1 allocs/op | 1 KiB | Gear hash |
-| jotfs/fastcdc-go | 2309 MB/s | 3 allocs/op | 512 KiB | Gear hash |
-| buildbuddy-io/fastcdc-go | 2292 MB/s | 3 allocs/op | 512 KiB | Gear hash |
-| restic/chunker | 693 MB/s | 26 allocs/op | 32229 KiB | Rabin fingerprint |
+|---------|------------|-------------|----------|--------------|
+| fastcdc (FindBoundary) | 1342.19 MB/s | 0 allocs/op | 0 B | Gear hash |
+| fastcdc (Next) | 1221.92 MB/s | 6 allocs/op | 1026 KiB | Gear hash |
+| fastcdc (Next, no norm) | 1345.29 MB/s | 6 allocs/op | 1026 KiB | Gear hash |
+| fastcdc (Pool) | 1259.86 MB/s | 1 allocs/op | 3 KiB | Gear hash |
+| jotfs/fastcdc-go | 1194.14 MB/s | 3 allocs/op | 512 KiB | Gear hash |
+| buildbuddy-io/fastcdc-go | 1193.22 MB/s | 3 allocs/op | 512 KiB | Gear hash |
+| restic/chunker | 305.17 MB/s | 24 allocs/op | 38445 KiB | Rabin fingerprint |
 
 **Note**: The `FindBoundary()` zero-allocation API provides superior performance. The streaming `Next()` API offers convenience with reasonable allocation overhead.
 
