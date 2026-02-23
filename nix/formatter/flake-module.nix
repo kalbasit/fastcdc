@@ -1,0 +1,27 @@
+{ inputs, ... }:
+{
+  imports = [ inputs.treefmt-nix.flakeModule ];
+
+  perSystem = {
+    treefmt = {
+      settings.global.excludes = [
+        ".agent/skills/**/*.md"
+        ".agent/workflows/*.md"
+        ".env"
+        ".envrc"
+        "LICENSE"
+        "renovate.json"
+      ];
+
+      programs = {
+        actionlint.enable = true;
+        deadnix.enable = true;
+        gofumpt.enable = true;
+        mdformat.enable = true;
+        nixfmt.enable = true;
+        statix.enable = true;
+        yamlfmt.enable = true;
+      };
+    };
+  };
+}
