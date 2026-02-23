@@ -1,8 +1,7 @@
 {
-  description = "TODO";
+  description = "fastcdc - a fast content-defined chunking algorithm";
 
   inputs = {
-
     flake-parts = {
       inputs.nixpkgs-lib.follows = "nixpkgs";
       url = "github:hercules-ci/flake-parts";
@@ -19,7 +18,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:numtide/treefmt-nix";
     };
-
   };
 
   outputs =

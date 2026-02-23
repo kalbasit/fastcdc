@@ -15,7 +15,6 @@
         ];
 
         _GO_VERSION = "${pkgs.go.version}";
-        _DBMATE_VERSION = "${pkgs.dbmate.version}";
 
         # Disable hardening for fortify otherwize it's not possible to use Delve.
         hardeningDisable = [ "fortify" ];
